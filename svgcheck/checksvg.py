@@ -39,18 +39,18 @@ def modify_style(node):
         # print("prop = %s" %  prop)
         v = prop.split(':')
         if len(v) != 2:
-            log.error("Malformed field '{}' in style attribute found. Field removed.".format(v),
+            log.error(f"Malformed field '{v}' in style attribute found. Field removed.",
                       where=node)
             continue
         p = v[0].strip()
         v = v[1].strip()  # May have leading blank
-        log.note("   modify_style - p={}  v={}".format(p, v))
+        log.note(f"   modify_style - p={p}  v={v}")
         # we will deal with the change of values later when the attribute list is processed.
         if p in props_to_check:
-            log.error("Style property '{}' promoted to attribute".format(p), where=node)
+            log.error(f"Style property '{p}' promoted to attribute", where=node)
             node.attrib[p] = v
         else:
-            log.error("Style property '{}' removed".format(p), where=node)
+            log.error(f"Style property '{p}' removed", where=node)
     del node.attrib['style']
 
 
@@ -64,7 +64,7 @@ def value_ok(obj, v):
     to replace the value if it is not.
     """
 
-    log.note("value_ok look for {} in {}".format(v, obj))
+    log.note(f"value_ok look for {v} in {obj}")
     # Look if the object is a real attribute, or we recursed w/ an
     # internal type name such as '<color>' (i.e. a basic_type)
     if obj in wp.properties:
@@ -87,7 +87,7 @@ def value_ok(obj, v):
     else:  # Unknown attribute
         return (False, None)
 
-    log.note("  legal value list {}".format(values))
+    log.note(f"  legal value list {values}")
     if len(values) == 0:
         # Empty tuples have nothing to check, assume it is correct
         return (True, None)
@@ -100,7 +100,7 @@ def value_ok(obj, v):
         if matched_v:
             replaceWith = matched_v
 
-    log.note(" --- skip to end -- {}".format(obj))
+    log.note(f" --- skip to end -- {obj}")
     v = v.lower()
     if obj == 'font-family':
         all = v.split(',')
@@ -180,7 +180,7 @@ def check(el, depth=0):
 
     # namespace for elements must be either empty or svg
     if ns is not None and ns not in wp.svg_urls:
-        log.warn("Element '{}' in namespace '{}' is not allowed".format(element, ns),
+        log.warn(f"Element '{element}' in namespace '{ns}' is not allowed",
                  where=el)
         return False  # Remove this el
 
@@ -188,7 +188,7 @@ def check(el, depth=0):
     log.note("{} element {: }: {}".format(' ' * (depth*indent), element, el.attrib))
     if element not in wp.elements:
         errorCount += 1
-        log.warn("Element '{}' not allowed".format(element), where=el)
+        log.warn(f"Element '{element}' not allowed", where=el)
         return False  # Remove this el
 
     elementAttributes = wp.elements[element]  # Allowed attributes for element
@@ -256,7 +256,7 @@ def check(el, depth=0):
             svgh = maybefloat(el.get('height'))
             try:
                 if svgw and svgh:
-                    newValue = '0 0 {} {}'.format(svgw, svgh)
+                    newValue = f'0 0 {svgw} {svgh}'
                     log.warn("Trying to put in the attribute with value '{0}'".
                              format(newValue), where=el)
                     el.set('viewBox', newValue)
@@ -275,7 +275,7 @@ def check(el, depth=0):
             continue
         ch_tag, ns = strip_prefix(child.tag, el)
         if ns not in wp.svg_urls:
-            log.warn("The namespace {} is not permitted for svg elements.".format(ns),
+            log.warn(f"The namespace {ns} is not permitted for svg elements.",
                      where=child)
             els_to_rm.append(child)
             continue

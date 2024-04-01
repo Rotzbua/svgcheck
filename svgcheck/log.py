@@ -34,7 +34,7 @@ def info(*args, **kwargs):
             pass
         else:
             fileName = os.path.relpath(fileName)
-        prefix = "{}:{}: ".format(fileName, where.sourceline)
+        prefix = f"{fileName}:{where.sourceline}: "
     write_err.write(prefix + ' '.join(args))
     write_err.write('\n')
     write_err.flush()
@@ -62,7 +62,7 @@ def warn(*args, **kwargs):
                 pass
             else:
                 fileName = os.path.relpath(fileName)
-            prefix = "{}:{}: ".format(fileName, where.sourceline)
+            prefix = f"{fileName}:{where.sourceline}: "
         write_err.write(prefix + ' '.join(args))
         write_err.write('\n')
         write_err.flush()
@@ -74,7 +74,7 @@ def error(*args, **kwargs):
     if 'where' in kwargs:
         where = kwargs['where']
         fileName = make_relative(where.base)
-        prefix = "{}:{}: ".format(fileName, where.sourceline)
+        prefix = f"{fileName}:{where.sourceline}: "
     if 'file' in kwargs:
         fileName = make_relative(kwargs['file'])
         prefix = "{}:{}: ".format(fileName, kwargs['line'])
