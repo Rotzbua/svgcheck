@@ -34,7 +34,7 @@ def info(*args, **kwargs):
             pass
         else:
             fileName = os.path.relpath(fileName)
-        prefix = "{0}:{1}: ".format(fileName, where.sourceline)
+        prefix = "{}:{}: ".format(fileName, where.sourceline)
     write_err.write(prefix + ' '.join(args))
     write_err.write('\n')
     write_err.flush()
@@ -62,8 +62,8 @@ def warn(*args, **kwargs):
                 pass
             else:
                 fileName = os.path.relpath(fileName)
-            prefix = "{0}:{1}: ".format(fileName, where.sourceline)
-        write_err.write(prefix + u' '.join(args))
+            prefix = "{}:{}: ".format(fileName, where.sourceline)
+        write_err.write(prefix + ' '.join(args))
         write_err.write('\n')
         write_err.flush()
 
@@ -74,10 +74,10 @@ def error(*args, **kwargs):
     if 'where' in kwargs:
         where = kwargs['where']
         fileName = make_relative(where.base)
-        prefix = "{0}:{1}: ".format(fileName, where.sourceline)
+        prefix = "{}:{}: ".format(fileName, where.sourceline)
     if 'file' in kwargs:
         fileName = make_relative(kwargs['file'])
-        prefix = "{0}:{1}: ".format(fileName, kwargs['line'])
+        prefix = "{}:{}: ".format(fileName, kwargs['line'])
     if 'additional' in kwargs:
         prefix = ' ' * kwargs['additional']
 

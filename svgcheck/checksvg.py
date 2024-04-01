@@ -30,7 +30,7 @@ def modify_style(node):
     """
     For style properties, we want to pull it apart and then make individual attributes
     """
-    log.note("modify_style check '{0}' in '{1}'".format(node.attrib['style'], node.tag))
+    log.note("modify_style check '{}' in '{}'".format(node.attrib['style'], node.tag))
 
     style_props = node.attrib['style'].rstrip(';').split(';')
     props_to_check = wp.style_properties
@@ -39,18 +39,18 @@ def modify_style(node):
         # print("prop = %s" %  prop)
         v = prop.split(':')
         if len(v) != 2:
-            log.error("Malformed field '{0}' in style attribute found. Field removed.".format(v),
+            log.error("Malformed field '{}' in style attribute found. Field removed.".format(v),
                       where=node)
             continue
         p = v[0].strip()
         v = v[1].strip()  # May have leading blank
-        log.note("   modify_style - p={0}  v={1}".format(p, v))
+        log.note("   modify_style - p={}  v={}".format(p, v))
         # we will deal with the change of values later when the attribute list is processed.
         if p in props_to_check:
-            log.error("Style property '{0}' promoted to attribute".format(p), where=node)
+            log.error("Style property '{}' promoted to attribute".format(p), where=node)
             node.attrib[p] = v
         else:
-            log.error("Style property '{0}' removed".format(p), where=node)
+            log.error("Style property '{}' removed".format(p), where=node)
     del node.attrib['style']
 
 
@@ -64,7 +64,7 @@ def value_ok(obj, v):
     to replace the value if it is not.
     """
 
-    log.note("value_ok look for %s in %s" % (v, obj))
+    log.note("value_ok look for {} in {}".format(v, obj))
     # Look if the object is a real attribute, or we recursed w/ an
     # internal type name such as '<color>' (i.e. a basic_type)
     if obj in wp.properties:
@@ -87,7 +87,7 @@ def value_ok(obj, v):
     else:  # Unknown attribute
         return (False, None)
 
-    log.note("  legal value list {0}".format(values))
+    log.note("  legal value list {}".format(values))
     if len(values) == 0:
         # Empty tuples have nothing to check, assume it is correct
         return (True, None)
@@ -100,7 +100,7 @@ def value_ok(obj, v):
         if matched_v:
             replaceWith = matched_v
 
-    log.note(" --- skip to end -- {0}".format(obj))
+    log.note(" --- skip to end -- {}".format(obj))
     v = v.lower()
     if obj == 'font-family':
         all = v.split(',')
@@ -171,7 +171,7 @@ def check(el, depth=0):
     """
     global errorCount
 
-    log.note("%s tag = %s" % (' ' * (depth*indent), el.tag))
+    log.note("{} tag = {}".format(' ' * (depth*indent), el.tag))
 
     # Check that the namespace is one of the pre-approved ones
     # ElementTree prefixes elements with default namespace in braces
@@ -180,15 +180,15 @@ def check(el, depth=0):
 
     # namespace for elements must be either empty or svg
     if ns is not None and ns not in wp.svg_urls:
-        log.warn("Element '{0}' in namespace '{1}' is not allowed".format(element, ns),
+        log.warn("Element '{}' in namespace '{}' is not allowed".format(element, ns),
                  where=el)
         return False  # Remove this el
 
     # Is the element in the list of legal elements?
-    log.note("%s element % s: %s" % (' ' * (depth*indent), element, el.attrib))
+    log.note("{} element {: }: {}".format(' ' * (depth*indent), element, el.attrib))
     if element not in wp.elements:
         errorCount += 1
-        log.warn("Element '{0}' not allowed".format(element), where=el)
+        log.warn("Element '{}' not allowed".format(element), where=el)
         return False  # Remove this el
 
     elementAttributes = wp.elements[element]  # Allowed attributes for element
@@ -201,7 +201,7 @@ def check(el, depth=0):
     for nsAttrib, val in el.attrib.items():
         # validate that the namespace of the element is known and ok
         attr, ns = strip_prefix(nsAttrib, el)
-        log.note("%s attr %s = %s (ns = %s)" % (
+        log.note("{} attr {} = {} (ns = {})".format(
                 ' ' * (depth*indent), attr, val, ns))
         if ns is not None and ns not in wp.svg_urls:
             if ns not in wp.xmlns_urls:
@@ -214,7 +214,7 @@ def check(el, depth=0):
         # element or is an attribute generically for all properties
         if (attr not in elementAttributes) and (attr not in wp.properties):
             errorCount += 1
-            log.warn("The element '{0}' does not allow the attribute '{1}',"
+            log.warn("The element '{}' does not allow the attribute '{}',"
                      " attribute to be removed.".format(element, attr),
                      where=el)
             attribs_to_remove.append(nsAttrib)
@@ -256,7 +256,7 @@ def check(el, depth=0):
             svgh = maybefloat(el.get('height'))
             try:
                 if svgw and svgh:
-                    newValue = '0 0 %s %s' % (svgw, svgh)
+                    newValue = '0 0 {} {}'.format(svgw, svgh)
                     log.warn("Trying to put in the attribute with value '{0}'".
                              format(newValue), where=el)
                     el.set('viewBox', newValue)
@@ -270,12 +270,12 @@ def check(el, depth=0):
         allowed_children = []
 
     for child in el:
-        log.note("%schild, tag = %s" % (' ' * (depth*indent), child.tag))
+        log.note("{}child, tag = {}".format(' ' * (depth*indent), child.tag))
         if not isinstance(child.tag, str):
             continue
         ch_tag, ns = strip_prefix(child.tag, el)
         if ns not in wp.svg_urls:
-            log.warn("The namespace {0} is not permitted for svg elements.".format(ns),
+            log.warn("The namespace {} is not permitted for svg elements.".format(ns),
                      where=child)
             els_to_rm.append(child)
             continue
@@ -316,7 +316,7 @@ def checkTree(tree):
 
         for path in svgPaths:
             if len(svgPaths) > 1:
-                log.note("Checking svg element at line {0} in file {1}".format(1, "file"))
+                log.note("Checking svg element at line {} in file {}".format(1, "file"))
             check(path, 0)
 
     return errorCount == 0
