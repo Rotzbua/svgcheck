@@ -51,5 +51,5 @@ svgcheck [options] SOURCE
 
 `svgcheck` depends on the following packages:
 
-- [lxml](http://lxml.de) *(>= 4.1.1)*
+- [lxml](https://lxml.de) *(>= 4.1.1)*
 - [xml2rfc](https://github.com/ietf-tools/xml2rfc/) *(>= 3.16.0)*
