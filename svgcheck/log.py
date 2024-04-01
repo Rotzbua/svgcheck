@@ -91,8 +91,8 @@ def exception(message, list):
     if isinstance(list, Exception):
         list = [list]
     for e in list:
-        attr = dict([(n, str(getattr(e, n)).replace("\n", " ")) for n in dir(e)
-                     if not n.startswith("_")])
+        attr = {n: str(getattr(e, n)).replace("\n", " ") for n in dir(e)
+                     if not n.startswith("_")}
         if 'message' in attr:
             if attr["message"].endswith(", got "):
                 attr["message"] += "nothing."
@@ -111,8 +111,8 @@ def exception_lines(message, list):
     if isinstance(list, Exception):
         list = [list]
     for e in list:
-        attr = dict([(n, str(getattr(e, n)).replace("\n", " ")) for n in dir(e)
-                     if not n.startswith("_")])
+        attr = {n: str(getattr(e, n)).replace("\n", " ") for n in dir(e)
+                     if not n.startswith("_")}
         if attr["message"].endswith(", got "):
             attr["message"] += "nothing."
         attr["filename"] = make_relative(attr["filename"])
